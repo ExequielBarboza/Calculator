@@ -1,23 +1,48 @@
 // Selected numbers and operator variables
 let firstNumber = null;
 let selectOperator = null;
-let secondNumber = null;
+let secondNumber = "";
+let partialResult = null;
+let secondOperator = null;
+
+// Buttons nodes and use of DOM
+//let operation = 0;
+let display = document.createElement("div");
+display.style.padding = "15px";
+let calculator = document.querySelector("#calculator");
+calculator.appendChild(display);
+let numberButtons = document.querySelector("#numbersButtons");
+calculator.appendChild(numberButtons);
+let buttons = document.querySelectorAll("button");
+let numbers = document.querySelectorAll(".number");
+let operators = document.querySelectorAll(".operators");
+let result = document.createElement("div");
+result.style.padding = "10px";
+result.textContent = "Result: "
+calculator.appendChild(result);
+// Equals and clear buttons
+let equals = document.querySelector("#equals");
+let clear = document.querySelector("#clear");
+equals.addEventListener("click", () => calculate());
+clear.addEventListener("click",() => {display.textContent = "";
+                                      selectOperator = null;
+                                      result.textContent = "Result: ";});
 
 // Operations functions
 function add(a,b){
-    result.textContent += (firstNumber + secondNumber);
+    partialResult = a + b;
 }
 
 function subtrack(a,b){
-    result.textContent += (firstNumber - secondNumber);
+    partialResult = a - b;
 }
 
 function multiply(a,b){
-    result.textContent += (firstNumber * secondNumber);
+    partialResult = a * b;
 }
 
 function divide(a,b){
-    result.textContent += (firstNumber % secondNumber);
+    partialResult = a / b;
 }
 
 // Function operate
@@ -38,22 +63,6 @@ function operate(num1,num2,operator){
     }
 }
 
-// Buttons nodes and use of DOM
-//let operation = 0;
-let display = document.createElement("div");
-display.style.padding = "15px";
-let calculator = document.querySelector("#calculator");
-calculator.appendChild(display);
-let numberButtons = document.querySelector("#numbersButtons");
-calculator.appendChild(numberButtons);
-let buttons = document.querySelectorAll("button");
-let numbers = document.querySelectorAll(".number");
-let operators = document.querySelectorAll(".operators");
-let result = document.createElement("div");
-result.style.padding = "10px";
-result.textContent = "Result: "
-calculator.appendChild(result);
-
 // Function to select first number and second number
 function displayNumber(input){
     input.forEach( number => {
@@ -62,22 +71,27 @@ function displayNumber(input){
             if(selectOperator == null){
                 firstNumber = display.textContent;
                 firstNumber = parseInt(firstNumber);
-            }
-            else {
-                secondNumber = display.textContent.slice(firstNumber.toString().length + 1);
+            } else if (selectOperator !== null){
+                //secondNumber = "";
+                secondNumber += number.textContent;
                 secondNumber = parseInt(secondNumber);
+            }else if(partialResult !== null){
+                firstNumber = display.textContent.slice(partialResult.length);
             }
         })
     })
-}
-
-displayNumber(numbers);
+};
 
 // Function to select operator
 function getOperator(){
     operators.forEach(operator => {
         operator.addEventListener("click",() => {
-            if(selectOperator !== null){
+            if(selectOperator !== null && secondNumber == ""){
+                display.textContent = display.textContent.slice(0,-1);
+            } else if (selectOperator !== null && secondNumber !== "" && secondOperator == null){
+                secondOperator = operator.textContent;
+                varyCalculations();
+            } else if(secondOperator !== null){
                 display.textContent = display.textContent.slice(0,-1);
             }
             display.textContent += operator.textContent;
@@ -86,20 +100,21 @@ function getOperator(){
     })
 };
 
-getOperator();
-
+//Function return final calculate
 function calculate() {
+        if(secondOperator !== null){
         operate(firstNumber,secondNumber,selectOperator);
+        result.textContent += partialResult;};
     };
 
-let equals = document.querySelector("#equals");
-let clear = document.querySelector("#clear");
-equals.addEventListener("click", () => calculate());
-clear.addEventListener("click",() => {display.textContent = "";
-                                      selectOperator = null;
-                                      result.textContent = "Result: ";});
+function varyCalculations (){
+    if (secondNumber !== null){
+        calculate();
+    }
+};
 
-
+displayNumber(numbers);
+getOperator();
 //Create the functions that populate the display when you click the number buttons.♥
 //You should be storing the ‘display value’ in a variable somewhere for use in the next step.♥
 
@@ -108,5 +123,9 @@ clear.addEventListener("click",() => {display.textContent = "";
 //and then operate() on the two numbers when the user presses the “=” key.♥
 
 //Users should be able to string together several operations and get the right answer,
+    // Calculate first two inputs value.♥
+        //Calculate and assign second number when second operator is selected.
+    // Calculate within click on equals button.
+    // 
 // with each pair of numbers being evaluated at a time.
 // For example, 12 + 7 - 5 * 3 = should yield 42.
