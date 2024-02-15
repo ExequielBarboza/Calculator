@@ -22,7 +22,7 @@ calculator.appendChild(result);
 // Equals and clear buttons
 let equals = document.querySelector("#equals");
 let clear = document.querySelector("#clear");
-equals.addEventListener("click", () => calculate());
+equals.addEventListener("click", () => firstOperation());
 clear.addEventListener("click",() => {display.textContent = "";
                                       selectOperator = null;
                                       result.textContent = "Result: ";});
@@ -67,103 +67,69 @@ function displayNumber(input){
     input.forEach( number => {
         number.addEventListener("click",() => {
             display.textContent += number.textContent;
-            if(selectOperator == null){
+            if(selectOperator == null && partialResult == null){
                 firstNumber = display.textContent;
-                firstNumber = parseInt(firstNumber);
+                firstNumber = parseFloat(firstNumber); // Select first number
             } else if (selectOperator !== null && partialResult == null){
                 secondNumber += number.textContent;
-                secondNumber = parseInt(secondNumber);
-            }else if(partialResult !== null && firstNumber !== ""){
-                firstNumber += number.textContent;
-                firstNumber = parseInt(firstNumber);
+                secondNumber = parseFloat(secondNumber); // Select second number
+            } else if (partialResult !== null && firstNumber !== ""){
+                secondNumber += number.textContent;
+                secondNumber = parseFloat(secondNumber); // Select second number
             } else if(partialResult !== null && firstNumber == ""){
                 firstNumber += number.textContent;
-                firstNumber = parseInt(firstNumber);
+                firstNumber = parseFloat(firstNumber); // Select second number
             }
         })
     })
 };
-
-// Function to select operator
-/*
 function getOperator(){
     operators.forEach(operator => {
         operator.addEventListener("click",() => {
-            if(selectOperator == null && secondNumber == "" && partialResult == null){ 
+            if(selectOperator == null && secondNumber == "" && secondOperator == null && firstNumber !== ""){
                 display.textContent += operator.textContent;
-                display.textContent = display.textContent.slice(0,-1); // First operator
-            } else if (selectOperator !== null && secondNumber == "" && secondOperator == null){
+                selectOperator = operator.textContent; // Only to select first operator
+            } else if(selectOperator !== null && secondNumber == "" && secondOperator == null){
                 display.textContent = display.textContent.slice(0,-1);
-                display.textContent += operator.textContent; // First operator change
-            } else if(selectOperator !== null && secondNumber !== "" && partialResult == null){
-                display.textContent += operator.textContent; // Second operator
+                display.textContent += operator.textContent;
+                selectOperator = operator.textContent; // First operator change
+            } else if (selectOperator !== null && secondNumber !== "" && secondOperator == null && firstNumber !== ""){
+                display.textContent += operator.textContent;
                 secondOperator = operator.textContent;
-                varyCalculations(); 
-            } else if(partialResult !== null && secondOperator !== null){
+                firstOperation(); // Second operator change
+            } else if (selectOperator !== null && secondNumber !== "" && secondOperator !== null && firstNumber !== ""){
                 display.textContent = display.textContent.slice(0,-1);
-                display.textContent += operator.textContent; // Second operator change
-                selectOperator = null;
-                secondNumber = "";
-                partialResult = null;
-            }
-            display.textContent += operator.textContent;
-            selectOperator = operator.textContent;
-        })
-})
-};
-*/
-
-function getOperator(){
-    operators.forEach(operator => {
-        operator.addEventListener("click",() => {
-            if(selectOperator == null){ 
                 display.textContent += operator.textContent;
-                selectOperator = operator.textContent; // First operator
-            } else if(firstNumber !== "" && secondNumber == ""){
+                secondOperator = operator.textContent;
+                //firstOperation()
+            } else if (selectOperator == null && secondNumber == "" && secondOperator !== null){
                 display.textContent = display.textContent.slice(0,-1);
-                display.textContent += operator.textContent; // First operator change
-            } else if (secondNumber !== "" && partialResult == null){
                 display.textContent += operator.textContent;
-                secondOperator = operator.textContent; // Second operator
-                varyCalculations();
-            } else if (secondNumber !== "" && partialResult !== null){
-                display.textContent = display.textContent.slice(0,-1);
-                display.textContent += operator.textContent; // Second operator change
-                partialResult = null;
-            } else if (secondNumber !== "" && partialResult == null){
+                secondOperator = operator.textContent;
+            } else if (selectOperator == null && secondNumber !== ""){
                 display.textContent += operator.textContent;
+                selectOperator = operator.textContent;
+                secondOperation();
             }
         })
-})
+    })
 };
 //Function return final calculate
-function calculate() {
-        if(secondOperator !== null){
-        operate(firstNumber,secondNumber,selectOperator);
-        result.textContent += partialResult;};
-        secondNumber = "";
-        partialResult = null;
-    };
+function firstOperation() {
+            operate(firstNumber,secondNumber,selectOperator);
+            result.textContent = "Result: " + partialResult;
+            firstNumber = partialResult;
+            selectOperator = null;
+            secondNumber = "";
+}
 
-function varyCalculations (){
-    if (secondNumber !== null){
-        calculate();
-    }
-};
+function secondOperation(){
+            operate(firstNumber,secondNumber,secondOperator);
+            result.textContent = "Result: " + partialResult;
+            firstNumber = partialResult;
+            selectOperator = null;
+            secondNumber = "";
+}
 
 displayNumber(numbers);
 getOperator();
-//Create the functions that populate the display when you click the number buttons.♥
-//You should be storing the ‘display value’ in a variable somewhere for use in the next step.♥
-
-//You’ll need to store the first number and second number that are input into the calculator,♥
-// utilize the operator that the user selects,♥
-//and then operate() on the two numbers when the user presses the “=” key.♥
-
-//Users should be able to string together several operations and get the right answer,
-    // Calculate first two inputs value.♥
-        //Calculate and assign second number when second operator is selected.
-    // Calculate within click on equals button.
-    // 
-// with each pair of numbers being evaluated at a time.
-// For example, 12 + 7 - 5 * 3 = should yield 42.
