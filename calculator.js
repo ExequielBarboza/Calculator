@@ -22,9 +22,25 @@ calculator.appendChild(result);
 // Equals and clear buttons
 let equals = document.querySelector("#equals");
 let clear = document.querySelector("#clear");
-equals.addEventListener("click", () => firstOperation());
+equals.addEventListener("click", () => {
+    if(firstNumber === "" || secondNumber === ""){
+        result.textContent = "Error. You should enter another number.";
+    }
+    else if (selectOperator !== null){
+        firstOperation();
+    } else if (selectOperator == null && secondOperator == null && partialResult == null){
+        result.textContent = "Error. You should enter a operator.";
+    } else if (secondOperator !== null){
+        secondOperation();
+    }
+});
 clear.addEventListener("click",() => {display.textContent = "";
-                                      selectOperator = null;
+                                       firstNumber = "";
+                                       selectOperator = null;
+                                       secondNumber = "";
+                                       partialResult = null;
+                                       secondOperator = null;
+
                                       result.textContent = "Result: ";});
 
 // Operations functions
@@ -41,7 +57,17 @@ function multiply(a,b){
 }
 
 function divide(a,b){
-    partialResult = a / b;
+    if (a == 0 || b == 0){
+        alert("Can't divide by 0");
+        display.textContent = display.textContent.slice(0,-1);
+        if(a == 0){
+            a = "";
+        }else if (b == 0){
+            b = "";
+        }
+    } else {
+        partialResult = a / b;
+    }
 }
 
 // Function operate
@@ -83,13 +109,14 @@ function displayNumber(input){
         })
     })
 };
+
 function getOperator(){
     operators.forEach(operator => {
         operator.addEventListener("click",() => {
-            if(selectOperator == null && secondNumber == "" && secondOperator == null && firstNumber !== ""){
+            if(selectOperator == null && secondNumber === "" && secondOperator == null && firstNumber !== ""){
                 display.textContent += operator.textContent;
                 selectOperator = operator.textContent; // Only to select first operator
-            } else if(selectOperator !== null && secondNumber == "" && secondOperator == null){
+            } else if(selectOperator !== null && secondNumber === "" && secondOperator == null){
                 display.textContent = display.textContent.slice(0,-1);
                 display.textContent += operator.textContent;
                 selectOperator = operator.textContent; // First operator change
@@ -102,7 +129,7 @@ function getOperator(){
                 display.textContent += operator.textContent;
                 secondOperator = operator.textContent;
                 //firstOperation()
-            } else if (selectOperator == null && secondNumber == "" && secondOperator !== null){
+            } else if (selectOperator == null && secondNumber === "" && secondOperator !== null){
                 display.textContent = display.textContent.slice(0,-1);
                 display.textContent += operator.textContent;
                 secondOperator = operator.textContent;
@@ -114,10 +141,15 @@ function getOperator(){
         })
     })
 };
+
 //Function return final calculate
 function firstOperation() {
             operate(firstNumber,secondNumber,selectOperator);
-            result.textContent = "Result: " + partialResult;
+            if (partialResult % 1 !== 0){
+                result.textContent = "Result: " + partialResult.toFixed(2);
+            } else {
+                result.textContent = "Result: " + partialResult;
+            }
             firstNumber = partialResult;
             selectOperator = null;
             secondNumber = "";
@@ -125,9 +157,13 @@ function firstOperation() {
 
 function secondOperation(){
             operate(firstNumber,secondNumber,secondOperator);
-            result.textContent = "Result: " + partialResult;
+            if(partialResult % 1 !== 0){
+                result.textContent = "Result: " + partialResult.toFixed(2);
+            } else {
+                result.textContent = "Result: " + partialResult;
+            }
             firstNumber = partialResult;
-            selectOperator = null;
+            secondOperator = null;
             secondNumber = "";
 }
 
