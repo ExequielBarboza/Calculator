@@ -68,6 +68,7 @@ function divide(a,b){
     } else {
         partialResult = a / b;
     }
+    console.log(partialResult);
 }
 
 // Function operate
@@ -95,20 +96,54 @@ function displayNumber(input){
             display.textContent += number.textContent;
             if(selectOperator == null && partialResult == null){
                 firstNumber = display.textContent;
+                if(hasManySymbols(firstNumber, '.')){
+                    alert('Invalid input');
+                    display.textContent = display.textContent.slice(0,-1);}
                 firstNumber = parseFloat(firstNumber); // Select first number
             } else if (selectOperator !== null && partialResult == null){
                 secondNumber += number.textContent;
-                secondNumber = parseFloat(secondNumber); // Select second number
+                if(hasManySymbols(secondNumber, '.')){
+                    alert('Invalid input');
+                    display.textContent = display.textContent.slice(0,-1);
+                    secondNumber = secondNumber.slice(0,-1);}
+                let checkDoll = secondNumber.slice(-1);
+                if(checkDoll == "."){
+                    secondNumber = secondNumber;
+                } else {
+                secondNumber = parseFloat(secondNumber);} // Select second number
             } else if (partialResult !== null && firstNumber !== ""){
                 secondNumber += number.textContent;
-                secondNumber = parseFloat(secondNumber); // Select second number
+                if(hasManySymbols(secondNumber, '.')){
+                    alert('Invalid input');
+                    display.textContent = display.textContent.slice(0,-1);
+                    secondNumber = secondNumber.slice(0,-1);}
+                let checkDoll = secondNumber.slice(-1);
+                if(checkDoll == "."){
+                    secondNumber = secondNumber;
+                } else {
+                secondNumber = parseFloat(secondNumber);} // Select second number
             } else if(partialResult !== null && firstNumber == ""){
                 firstNumber += number.textContent;
-                firstNumber = parseFloat(firstNumber); // Select second number
+                if(hasManySymbols(firstNumber, '.')){
+                    alert('Invalid input');
+                    display.textContent = display.textContent.slice(0,-1);
+                    secondNumber = secondNumber.slice(0,-1);}
+                let checkDoll = firstNumber.slice(-1);
+                if(checkDoll == "."){
+                    firstNumber = firstNumber;
+                } else {
+                    firstNumber = parseFloat(firstNumber);} // Select second number
             }
         })
     })
 };
+
+function hasManySymbols(string,symbol){
+    const firstIndex = string.indexOf(symbol)
+    if(firstIndex == -1) return false
+    
+    return string.indexOf(symbol, firstIndex + 1) != -1;
+}
 
 function getOperator(){
     operators.forEach(operator => {
