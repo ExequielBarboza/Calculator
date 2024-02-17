@@ -8,6 +8,7 @@ let secondOperator = null;
 // Buttons nodes and use of DOM
 let display = document.createElement("div");
 display.style.padding = "15px";
+display.style.display = "flex";
 let calculator = document.querySelector("#calculator");
 calculator.appendChild(display);
 let numberButtons = document.querySelector("#numbersButtons");
@@ -17,9 +18,30 @@ let numbers = document.querySelectorAll(".number");
 let operators = document.querySelectorAll(".operators");
 let result = document.createElement("div");
 result.style.padding = "10px";
-result.textContent = "Result: "
+result.textContent = "Result: ";
 calculator.appendChild(result);
 // Equals and clear buttons
+let backspace = document.querySelector("#backspace");
+backspace.addEventListener("click", () => {
+        display.textContent = display.textContent.slice(0,-1);
+        if(firstNumber !== "" && selectOperator == null && partialResult == null){
+            firstNumber = firstNumber.toString();
+            firstNumber = firstNumber.slice(0,-1);
+            firstNumber = parseFloat(firstNumber);
+        } else if(selectOperator !== null && secondNumber == "" && secondOperator == null){
+            selectOperator = null;
+        } else if(selectOperator !== null && secondNumber !== "" && secondOperator == null){
+            secondNumber = secondNumber.toString();
+            secondNumber = secondNumber.slice(0,-1);
+            secondNumber = parseFloat(secondNumber);
+        }else if(secondOperator !== null && secondNumber == ""){
+            secondOperator = null;
+        }else if (selectOperator == null && partialResult !== null && secondNumber !== null){
+            secondNumber = secondNumber.toString();
+            secondNumber = secondNumber.slice(0,-1);
+            secondNumber = parseFloat(secondNumber);
+        }
+})
 let equals = document.querySelector("#equals");
 let clear = document.querySelector("#clear");
 equals.addEventListener("click", () => {
