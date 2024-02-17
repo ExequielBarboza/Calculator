@@ -33,13 +33,15 @@ backspace.addEventListener("click", () => {
         } else if(selectOperator !== null && secondNumber !== "" && secondOperator == null){
             secondNumber = secondNumber.toString();
             secondNumber = secondNumber.slice(0,-1);
-            secondNumber = parseFloat(secondNumber);
+            if(secondNumber !== ""){
+            secondNumber = parseFloat(secondNumber);}
         }else if(secondOperator !== null && secondNumber == ""){
             secondOperator = null;
         }else if (selectOperator == null && partialResult !== null && secondNumber !== null){
             secondNumber = secondNumber.toString();
             secondNumber = secondNumber.slice(0,-1);
-            secondNumber = parseFloat(secondNumber);
+            if(secondNumber !== ""){
+            secondNumber = parseFloat(secondNumber);}
         }
 })
 let equals = document.querySelector("#equals");
